@@ -20,17 +20,29 @@ Generate MCP servers from pub.dev package documentation.
 
 ### Installation
 
+Install globally from pub.dev:
+
+```bash
+dart pub global activate pubdev_mcp_bridge
+```
+
+Or install from source:
+
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/pubdev_mcp_bridge.git
-cd pubdev_mcp_bridge
+git clone https://github.com/aphrabehn/pubdev_to_mcp.git
+cd pubdev_to_mcp
 
 # Install dependencies
 dart pub get
 
-# Install globally
+# Install globally from source
 dart pub global activate --source path .
 ```
+
+Make sure the pub cache bin directory is in your PATH:
+- **macOS/Linux**: Add `export PATH="$PATH":"$HOME/.pub-cache/bin"` to your shell profile
+- **Windows**: Add `%LOCALAPPDATA%\Pub\Cache\bin` to your PATH environment variable
 
 ### Basic Usage
 
@@ -259,8 +271,8 @@ pubdev_mcp_bridge/
 
 ```bash
 # Setup
-git clone https://github.com/yourusername/pubdev_mcp_bridge.git
-cd pubdev_mcp_bridge
+git clone https://github.com/aphrabehn/pubdev_to_mcp.git
+cd pubdev_to_mcp
 dart pub get
 
 # Run during development
