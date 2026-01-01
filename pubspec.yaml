@@ -1,0 +1,22 @@
+name: pubdev_mcp_bridge
+description: Generate MCP servers from pub.dev package documentation.
+version: 2.0.0
+
+environment:
+  sdk: ^3.5.0
+
+dependencies:
+  analyzer: ^9.0.0
+  args: ^2.4.0
+  archive: ^4.0.0
+  dart_mcp: ^0.2.0
+  http: ^1.1.0
+  path: ^1.8.0
+  stream_channel: ^2.1.0
+
+dev_dependencies:
+  lints: ^5.0.0
+  test: ^1.24.0
+
+executables:
+  pubdev_mcp_bridge: pubdev_mcp_bridge

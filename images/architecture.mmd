@@ -1,0 +1,10 @@
+flowchart LR
+    subgraph Extraction
+        A[pub.dev] -->|HTTP| B[Extractor Pipeline]
+        B -->|JSON| C[Cache]
+    end
+
+    subgraph Runtime
+        C --> D[MCP Server]
+        D <-->|stdio| E[Claude]
+    end
