@@ -5,6 +5,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.3] - 2025-01-02
+
+### Added
+- Added .pubignore to exclude development files from published package
+- Added CLAUDE.md with project overview and development guidelines
+- Added CONTRIBUTING.md with architecture details and contribution guidelines
+- Added doc/TUTORIAL.md with comprehensive usage guide
+- Added example/README.md with example usage
+
+### Changed
+- Updated README.md with improved documentation and examples
+- Improved package metadata and topics
+
+### Removed
+- Removed PUBLISHING.md from published package (now in .pubignore)
+- Removed firebase-debug.log from published package
+
 ## [2.0.2] - 2025-01-01
 
 ### Fixed
