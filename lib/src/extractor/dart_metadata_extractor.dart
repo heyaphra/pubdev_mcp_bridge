@@ -19,8 +19,38 @@ class DartMetadataExtractor {
   /// Checks if analyzer is available (always true, it's a dependency).
   Future<bool> isAvailable() async => true;
 
+  /// Prepares package for analysis by removing workspace resolution.
+  ///
+  /// Packages developed in Dart workspaces (monorepos) may have
+  /// `resolution: workspace` in their pubspec.yaml. This is a development-time
+  /// artifact - published packages on pub.dev have normal dependencies that
+  /// work standalone. We strip this line from all pubspec.yaml files in the
+  /// package directory to allow `dart pub get` to succeed.
+  Future<void> _prepareForAnalysis(String packageDir) async {
+    // Find all pubspec.yaml files recursively
+    final packageDirEntity = Directory(packageDir);
+    if (!packageDirEntity.existsSync()) return;
+
+    await for (final entity in packageDirEntity.list(recursive: true)) {
+      if (entity is File && entity.path.endsWith('pubspec.yaml')) {
+        var content = await entity.readAsString();
+
+        if (content.contains('resolution: workspace')) {
+          content = content.replaceAll(
+            RegExp(r'resolution:\s*workspace\s*\n?'),
+            '',
+          );
+          await entity.writeAsString(content);
+        }
+      }
+    }
+  }
+
   /// Runs `dart pub get` in the package directory.
   Future<void> pubGet(String packageDir) async {
+    // Strip workspace resolution if present
+    await _prepareForAnalysis(packageDir);
+
     final result = await Process.run('dart', [
       'pub',
       'get',

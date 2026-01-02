@@ -63,38 +63,50 @@ Add new version entry with:
 - Fixed bugs
 - Security updates
 
-### 3. Commit Changes
+### 3. Create Release Branch
 ```bash
+git checkout -b release/vX.Y.Z
 git add .
-git commit -m "chore: bump version to X.Y.Z"
+git commit -m "chore: bump version to X.Y.Z with updated documentation"
+git push origin release/vX.Y.Z
 ```
 
-### 4. Create Git Tag
+### 4. Create Pull Request
+1. Go to GitHub repository
+2. Create PR from `release/vX.Y.Z` to `main`
+3. Title: "Release vX.Y.Z"
+4. Description: Include CHANGELOG content
+5. Request review if applicable
+6. Wait for CI/CD checks to pass
+7. Merge PR (use "Squash and merge" or "Create merge commit")
+
+### 5. Create Git Tag (After PR Merged)
 ```bash
+git checkout main
+git pull origin main
 git tag -a vX.Y.Z -m "Release version X.Y.Z"
-git push origin main
 git push origin vX.Y.Z
 ```
 
-### 5. Authenticate with pub.dev
+### 6. Authenticate with pub.dev
 First-time only:
 ```bash
 dart pub login
 ```
 
-### 6. Final Validation
+### 7. Final Validation
 ```bash
 dart pub publish --dry-run
 ```
 
-### 7. Publish
+### 8. Publish
 ```bash
 dart pub publish
 ```
 
 Confirm when prompted.
 
-### 8. Verify Publication
+### 9. Verify Publication
 1. Visit https://pub.dev/packages/pubdev_mcp_bridge
 2. Verify all information displays correctly
 3. Test installation:
