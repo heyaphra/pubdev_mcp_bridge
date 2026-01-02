@@ -83,15 +83,26 @@ $(cat CHANGELOG.md | sed -n '/## \[X.Y.Z\]/,/## \[/p' | head -n -1)"
 
 If GitHub CLI is not available, guide the user to create the PR manually at the repository URL.
 
-After PR is created, wait for CI/CD checks to pass, then merge:
-```bash
-gh pr merge --squash
-```
+**⛔ STOP: Human Review Required**
 
-### 5. Create Git Tag (After PR Merged)
+DO NOT proceed further. DO NOT merge the PR locally or via CLI.
+
+The user must:
+1. Review the PR on GitHub
+2. Address any code reviewer feedback  
+3. Wait for CI/CD checks to pass
+4. **Merge the PR manually on GitHub** (not via CLI)
+
+Ask the user: "Have you reviewed and merged the PR on GitHub? Once merged, type 'yes' or 'merged' to continue with tagging and publishing."
+
+### 5. Create Git Tag (After User Confirms PR Merged on GitHub)
 ```bash
 git checkout main
 git pull origin main
+
+# Verify the merge actually happened
+git log --oneline -1 | grep -q "X.Y.Z" || echo "Warning: Version X.Y.Z not found in latest commit"
+
 git tag -a vX.Y.Z -m "Release version X.Y.Z"
 git push origin vX.Y.Z
 ```
