@@ -10,10 +10,10 @@ This document provides the complete checklist for publishing `pubdev_mcp_bridge`
   - [x] Name: `pubdev_mcp_bridge`
   - [x] Description: 105 characters (within 60-180 range)
   - [x] Version: `2.0.0` (follows semantic versioning)
-  - [x] SDK constraint: `^3.5.0`
-  - [x] Repository URL: `https://github.com/aphrabehn/pubdev_to_mcp`
-  - [x] Homepage URL: `https://github.com/aphrabehn/pubdev_to_mcp`
-  - [x] Issue tracker URL: `https://github.com/aphrabehn/pubdev_to_mcp/issues`
+  - [x] SDK constraint: `^3.7.0`
+  - [x] Repository URL: `https://github.com/heyaphra/pubdev_mcp_bridge`
+  - [x] Homepage URL: `https://github.com/heyaphra/pubdev_mcp_bridge`
+  - [x] Issue tracker URL: `https://github.com/heyaphra/pubdev_mcp_bridge/issues`
   - [x] Topics: mcp, documentation, pub-dev, code-generation, ai
   - [x] Executables: `pubdev_mcp_bridge`
 
@@ -68,12 +68,12 @@ This document provides the complete checklist for publishing `pubdev_mcp_bridge`
 
 - [x] **Dependencies**: All dependencies use appropriate version constraints
   - analyzer: ^9.0.0
-  - args: ^2.4.0
-  - archive: ^4.0.0
-  - dart_mcp: ^0.2.0
-  - http: ^1.1.0
-  - path: ^1.8.0
-  - stream_channel: ^2.1.0
+  - args: ^2.7.0
+  - archive: ^4.0.7
+  - dart_mcp: ^0.4.0
+  - http: ^1.6.0
+  - path: ^1.9.1
+  - stream_channel: ^2.1.4
 
 ### ✅ Testing
 
@@ -116,7 +116,7 @@ git push origin v2.0.0
 ### 3. Verify Repository
 
 Ensure the GitHub repository is public and accessible:
-- URL: https://github.com/aphrabehn/pubdev_to_mcp
+- URL: https://github.com/heyaphra/pubdev_mcp_bridge
 - Public visibility
 - Contains all source code
 
@@ -241,7 +241,7 @@ To maximize pub points:
   - [x] No errors or warnings from `dart analyze`
 
 - [x] **Support latest stable SDK** (20 points)
-  - [x] SDK constraint: `^3.5.0`
+  - [x] SDK constraint: `^3.7.0`
 
 - [x] **Use null safety** (10 points)
   - [x] All code uses null safety

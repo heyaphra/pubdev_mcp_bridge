@@ -1,4 +1,8 @@
-/// Parses dartdoc_json output into PackageDoc model.
+/// Parses analyzer JSON output into PackageDoc model.
+///
+/// Converts the JSON output from [DartMetadataExtractor] (which uses
+/// `package:analyzer`) into structured [PackageDoc] objects for caching
+/// and serving via MCP.
 library;
 
 import 'dart:convert';
@@ -8,9 +12,16 @@ import 'package:path/path.dart' as p;
 
 import '../models/package_doc.dart';
 
-/// Parses dartdoc_json output.
+/// Parses analyzer JSON output into [PackageDoc] model.
+///
+/// The [DartMetadataExtractor] produces JSON containing library declarations
+/// (classes, functions, enums, etc.) which this parser converts into
+/// strongly-typed model objects.
 class DartdocParser {
-  /// Parses the dartdoc JSON file into a PackageDoc.
+  /// Parses the analyzer JSON file into a PackageDoc.
+  ///
+  /// The [jsonPath] should point to the JSON file created by
+  /// [DartMetadataExtractor.run].
   Future<PackageDoc> parse(
     String jsonPath,
     String packageName,
@@ -24,7 +35,7 @@ class DartdocParser {
     final content = await file.readAsString();
     final json = jsonDecode(content);
 
-    // dartdoc_json outputs an array of library objects
+    // The analyzer outputs an array of library objects
     final libraryList = json as List<dynamic>;
     final libraries = <LibraryDoc>[];
 

@@ -188,7 +188,7 @@ With the analyzer approach working, I built `pubdev_mcp_bridge`—a CLI that cre
 ### Installation
 
 ```bash
-git clone https://github.com/yourusername/pubdev_mcp_bridge.git
+git clone https://github.com/heyaphra/pubdev_mcp_bridge.git
 cd pubdev_mcp_bridge
 dart pub get
 dart pub global activate --source path .
@@ -352,7 +352,7 @@ Dart is evolving rapidly (dot-shorthands, macros, records, patterns). The analyz
 
 ```bash
 # Install
-git clone https://github.com/yourusername/pubdev_mcp_bridge.git
+git clone https://github.com/heyaphra/pubdev_mcp_bridge.git
 cd pubdev_mcp_bridge
 dart pub get
 dart pub global activate --source path .

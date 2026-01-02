@@ -86,12 +86,12 @@ dart analyze
 ## Dependencies
 
 - `analyzer` ^9.0.0 — Dart source analysis
-- `dart_mcp` ^0.2.0 — MCP server implementation
-- `archive` ^4.0.0 — .tar.gz extraction
-- `http` ^1.1.0 — HTTP client
-- `args` ^2.4.0 — CLI parsing
-- `path` ^1.8.0 — Path handling
-- `stream_channel` ^2.1.0 — Stdio streams
+- `dart_mcp` ^0.4.0 — MCP server implementation
+- `archive` ^4.0.7 — .tar.gz extraction
+- `http` ^1.6.0 — HTTP client
+- `args` ^2.7.0 — CLI parsing
+- `path` ^1.9.1 — Path handling
+- `stream_channel` ^2.1.4 — Stdio streams
 
 ## Common Tasks
 
