@@ -29,7 +29,8 @@ class PackageDoc {
       description: json['description'] as String?,
       repository: json['repository'] as String?,
       homepage: json['homepage'] as String?,
-      libraries: (json['libraries'] as List<dynamic>?)
+      libraries:
+          (json['libraries'] as List<dynamic>?)
               ?.map((e) => LibraryDoc.fromJson(e as Map<String, dynamic>))
               .toList() ??
           const [],
@@ -37,13 +38,13 @@ class PackageDoc {
   }
 
   Map<String, dynamic> toJson() => {
-        'name': name,
-        'version': version,
-        if (description != null) 'description': description,
-        if (repository != null) 'repository': repository,
-        if (homepage != null) 'homepage': homepage,
-        'libraries': libraries.map((e) => e.toJson()).toList(),
-      };
+    'name': name,
+    'version': version,
+    if (description != null) 'description': description,
+    if (repository != null) 'repository': repository,
+    if (homepage != null) 'homepage': homepage,
+    'libraries': libraries.map((e) => e.toJson()).toList(),
+  };
 
   /// Get all classes across all libraries.
   List<ClassDoc> get allClasses =>
@@ -99,21 +100,20 @@ class LibraryDoc {
   }
 
   Map<String, dynamic> toJson() => {
-        'name': name,
-        if (description != null) 'description': description,
-        if (classes.isNotEmpty)
-          'classes': classes.map((e) => e.toJson()).toList(),
-        if (functions.isNotEmpty)
-          'functions': functions.map((e) => e.toJson()).toList(),
-        if (enums.isNotEmpty) 'enums': enums.map((e) => e.toJson()).toList(),
-        if (typedefs.isNotEmpty)
-          'typedefs': typedefs.map((e) => e.toJson()).toList(),
-        if (extensions.isNotEmpty)
-          'extensions': extensions.map((e) => e.toJson()).toList(),
-        if (mixins.isNotEmpty) 'mixins': mixins.map((e) => e.toJson()).toList(),
-        if (variables.isNotEmpty)
-          'variables': variables.map((e) => e.toJson()).toList(),
-      };
+    'name': name,
+    if (description != null) 'description': description,
+    if (classes.isNotEmpty) 'classes': classes.map((e) => e.toJson()).toList(),
+    if (functions.isNotEmpty)
+      'functions': functions.map((e) => e.toJson()).toList(),
+    if (enums.isNotEmpty) 'enums': enums.map((e) => e.toJson()).toList(),
+    if (typedefs.isNotEmpty)
+      'typedefs': typedefs.map((e) => e.toJson()).toList(),
+    if (extensions.isNotEmpty)
+      'extensions': extensions.map((e) => e.toJson()).toList(),
+    if (mixins.isNotEmpty) 'mixins': mixins.map((e) => e.toJson()).toList(),
+    if (variables.isNotEmpty)
+      'variables': variables.map((e) => e.toJson()).toList(),
+  };
 }
 
 /// Documentation for a class.
@@ -161,20 +161,19 @@ class ClassDoc {
   }
 
   Map<String, dynamic> toJson() => {
-        'name': name,
-        if (description != null) 'description': description,
-        if (superclass != null) 'superclass': superclass,
-        if (interfaces.isNotEmpty) 'interfaces': interfaces,
-        if (mixins.isNotEmpty) 'mixins': mixins,
-        if (typeParameters.isNotEmpty) 'typeParameters': typeParameters,
-        if (constructors.isNotEmpty)
-          'constructors': constructors.map((e) => e.toJson()).toList(),
-        if (methods.isNotEmpty)
-          'methods': methods.map((e) => e.toJson()).toList(),
-        if (fields.isNotEmpty) 'fields': fields.map((e) => e.toJson()).toList(),
-        if (annotations.isNotEmpty) 'annotations': annotations,
-        if (isAbstract) 'isAbstract': isAbstract,
-      };
+    'name': name,
+    if (description != null) 'description': description,
+    if (superclass != null) 'superclass': superclass,
+    if (interfaces.isNotEmpty) 'interfaces': interfaces,
+    if (mixins.isNotEmpty) 'mixins': mixins,
+    if (typeParameters.isNotEmpty) 'typeParameters': typeParameters,
+    if (constructors.isNotEmpty)
+      'constructors': constructors.map((e) => e.toJson()).toList(),
+    if (methods.isNotEmpty) 'methods': methods.map((e) => e.toJson()).toList(),
+    if (fields.isNotEmpty) 'fields': fields.map((e) => e.toJson()).toList(),
+    if (annotations.isNotEmpty) 'annotations': annotations,
+    if (isAbstract) 'isAbstract': isAbstract,
+  };
 }
 
 /// Documentation for a constructor.
@@ -204,19 +203,20 @@ class ConstructorDoc {
   }
 
   Map<String, dynamic> toJson() => {
-        'name': name,
-        if (description != null) 'description': description,
-        if (parameters.isNotEmpty)
-          'parameters': parameters.map((e) => e.toJson()).toList(),
-        if (isConst) 'isConst': isConst,
-        if (isFactory) 'isFactory': isFactory,
-      };
+    'name': name,
+    if (description != null) 'description': description,
+    if (parameters.isNotEmpty)
+      'parameters': parameters.map((e) => e.toJson()).toList(),
+    if (isConst) 'isConst': isConst,
+    if (isFactory) 'isFactory': isFactory,
+  };
 
   String get signature {
     final params = parameters.map((p) => p.signature).join(', ');
-    final prefix = isConst
-        ? 'const '
-        : isFactory
+    final prefix =
+        isConst
+            ? 'const '
+            : isFactory
             ? 'factory '
             : '';
     return '$prefix$name($params)';
@@ -265,18 +265,18 @@ class MethodDoc {
   }
 
   Map<String, dynamic> toJson() => {
-        'name': name,
-        if (description != null) 'description': description,
-        'returnType': returnType,
-        if (parameters.isNotEmpty)
-          'parameters': parameters.map((e) => e.toJson()).toList(),
-        if (typeParameters.isNotEmpty) 'typeParameters': typeParameters,
-        if (isStatic) 'isStatic': isStatic,
-        if (isAbstract) 'isAbstract': isAbstract,
-        if (isOperator) 'isOperator': isOperator,
-        if (isGetter) 'isGetter': isGetter,
-        if (isSetter) 'isSetter': isSetter,
-      };
+    'name': name,
+    if (description != null) 'description': description,
+    'returnType': returnType,
+    if (parameters.isNotEmpty)
+      'parameters': parameters.map((e) => e.toJson()).toList(),
+    if (typeParameters.isNotEmpty) 'typeParameters': typeParameters,
+    if (isStatic) 'isStatic': isStatic,
+    if (isAbstract) 'isAbstract': isAbstract,
+    if (isOperator) 'isOperator': isOperator,
+    if (isGetter) 'isGetter': isGetter,
+    if (isSetter) 'isSetter': isSetter,
+  };
 
   String get signature {
     if (isGetter) return '$returnType get $name';
@@ -326,14 +326,14 @@ class FieldDoc {
   }
 
   Map<String, dynamic> toJson() => {
-        'name': name,
-        if (description != null) 'description': description,
-        'type': type,
-        if (isStatic) 'isStatic': isStatic,
-        if (isFinal) 'isFinal': isFinal,
-        if (isConst) 'isConst': isConst,
-        if (isLate) 'isLate': isLate,
-      };
+    'name': name,
+    if (description != null) 'description': description,
+    'type': type,
+    if (isStatic) 'isStatic': isStatic,
+    if (isFinal) 'isFinal': isFinal,
+    if (isConst) 'isConst': isConst,
+    if (isLate) 'isLate': isLate,
+  };
 }
 
 /// Documentation for a parameter.
@@ -366,13 +366,13 @@ class ParameterDoc {
   }
 
   Map<String, dynamic> toJson() => {
-        'name': name,
-        'type': type,
-        if (!isRequired) 'isRequired': isRequired,
-        if (isNamed) 'isNamed': isNamed,
-        if (isPositional) 'isPositional': isPositional,
-        if (defaultValue != null) 'defaultValue': defaultValue,
-      };
+    'name': name,
+    'type': type,
+    if (!isRequired) 'isRequired': isRequired,
+    if (isNamed) 'isNamed': isNamed,
+    if (isPositional) 'isPositional': isPositional,
+    if (defaultValue != null) 'defaultValue': defaultValue,
+  };
 
   String get signature {
     final req = isRequired && isNamed ? 'required ' : '';
@@ -408,13 +408,13 @@ class FunctionDoc {
   }
 
   Map<String, dynamic> toJson() => {
-        'name': name,
-        if (description != null) 'description': description,
-        'returnType': returnType,
-        if (parameters.isNotEmpty)
-          'parameters': parameters.map((e) => e.toJson()).toList(),
-        if (typeParameters.isNotEmpty) 'typeParameters': typeParameters,
-      };
+    'name': name,
+    if (description != null) 'description': description,
+    'returnType': returnType,
+    if (parameters.isNotEmpty)
+      'parameters': parameters.map((e) => e.toJson()).toList(),
+    if (typeParameters.isNotEmpty) 'typeParameters': typeParameters,
+  };
 
   String get signature {
     final typeParams =
@@ -451,13 +451,12 @@ class EnumDoc {
   }
 
   Map<String, dynamic> toJson() => {
-        'name': name,
-        if (description != null) 'description': description,
-        if (values.isNotEmpty) 'values': values.map((e) => e.toJson()).toList(),
-        if (methods.isNotEmpty)
-          'methods': methods.map((e) => e.toJson()).toList(),
-        if (fields.isNotEmpty) 'fields': fields.map((e) => e.toJson()).toList(),
-      };
+    'name': name,
+    if (description != null) 'description': description,
+    if (values.isNotEmpty) 'values': values.map((e) => e.toJson()).toList(),
+    if (methods.isNotEmpty) 'methods': methods.map((e) => e.toJson()).toList(),
+    if (fields.isNotEmpty) 'fields': fields.map((e) => e.toJson()).toList(),
+  };
 }
 
 /// Documentation for an enum value.
@@ -475,9 +474,9 @@ class EnumValueDoc {
   }
 
   Map<String, dynamic> toJson() => {
-        'name': name,
-        if (description != null) 'description': description,
-      };
+    'name': name,
+    if (description != null) 'description': description,
+  };
 }
 
 /// Documentation for a typedef.
@@ -504,11 +503,11 @@ class TypedefDoc {
   }
 
   Map<String, dynamic> toJson() => {
-        'name': name,
-        if (description != null) 'description': description,
-        'type': type,
-        if (typeParameters.isNotEmpty) 'typeParameters': typeParameters,
-      };
+    'name': name,
+    if (description != null) 'description': description,
+    'type': type,
+    if (typeParameters.isNotEmpty) 'typeParameters': typeParameters,
+  };
 }
 
 /// Documentation for an extension.
@@ -538,13 +537,12 @@ class ExtensionDoc {
   }
 
   Map<String, dynamic> toJson() => {
-        'name': name,
-        if (description != null) 'description': description,
-        'onType': onType,
-        if (methods.isNotEmpty)
-          'methods': methods.map((e) => e.toJson()).toList(),
-        if (fields.isNotEmpty) 'fields': fields.map((e) => e.toJson()).toList(),
-      };
+    'name': name,
+    if (description != null) 'description': description,
+    'onType': onType,
+    if (methods.isNotEmpty) 'methods': methods.map((e) => e.toJson()).toList(),
+    if (fields.isNotEmpty) 'fields': fields.map((e) => e.toJson()).toList(),
+  };
 }
 
 /// Documentation for a mixin.
@@ -577,15 +575,14 @@ class MixinDoc {
   }
 
   Map<String, dynamic> toJson() => {
-        'name': name,
-        if (description != null) 'description': description,
-        if (superclassConstraints.isNotEmpty)
-          'superclassConstraints': superclassConstraints,
-        if (interfaces.isNotEmpty) 'interfaces': interfaces,
-        if (methods.isNotEmpty)
-          'methods': methods.map((e) => e.toJson()).toList(),
-        if (fields.isNotEmpty) 'fields': fields.map((e) => e.toJson()).toList(),
-      };
+    'name': name,
+    if (description != null) 'description': description,
+    if (superclassConstraints.isNotEmpty)
+      'superclassConstraints': superclassConstraints,
+    if (interfaces.isNotEmpty) 'interfaces': interfaces,
+    if (methods.isNotEmpty) 'methods': methods.map((e) => e.toJson()).toList(),
+    if (fields.isNotEmpty) 'fields': fields.map((e) => e.toJson()).toList(),
+  };
 }
 
 /// Documentation for a top-level variable.
@@ -615,19 +612,16 @@ class VariableDoc {
   }
 
   Map<String, dynamic> toJson() => {
-        'name': name,
-        if (description != null) 'description': description,
-        'type': type,
-        if (isConst) 'isConst': isConst,
-        if (isFinal) 'isFinal': isFinal,
-      };
+    'name': name,
+    if (description != null) 'description': description,
+    'type': type,
+    if (isConst) 'isConst': isConst,
+    if (isFinal) 'isFinal': isFinal,
+  };
 }
 
 // Helper functions for JSON parsing
-List<T> _parseList<T>(
-  dynamic json,
-  T Function(Map<String, dynamic>) fromJson,
-) {
+List<T> _parseList<T>(dynamic json, T Function(Map<String, dynamic>) fromJson) {
   if (json == null) return const [];
   return (json as List<dynamic>)
       .map((e) => fromJson(e as Map<String, dynamic>))

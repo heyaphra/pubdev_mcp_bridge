@@ -65,13 +65,17 @@ class CacheManager {
   /// print('Cache at: ${cache.cacheDir.path}');
   /// ```
   factory CacheManager.defaultLocation() {
-    final home = Platform.environment['HOME'] ??
+    final home =
+        Platform.environment['HOME'] ??
         Platform.environment['USERPROFILE'] ??
         '.';
-    final cachePath = Platform.isWindows
-        ? p.join(
-            Platform.environment['LOCALAPPDATA'] ?? home, 'pubdev_mcp_cache')
-        : p.join(home, '.pubdev_mcp_cache');
+    final cachePath =
+        Platform.isWindows
+            ? p.join(
+              Platform.environment['LOCALAPPDATA'] ?? home,
+              'pubdev_mcp_cache',
+            )
+            : p.join(home, '.pubdev_mcp_cache');
     return CacheManager(Directory(cachePath));
   }
 

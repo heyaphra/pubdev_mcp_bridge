@@ -66,10 +66,7 @@ class ServeCommand extends Command<int> {
       );
 
       // Create and start server
-      final server = PubdevMcpServer(
-        channel: channel,
-        package: package,
-      );
+      final server = PubdevMcpServer(channel: channel, package: package);
 
       // The server runs until the channel is closed
       await server.done;

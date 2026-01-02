@@ -1,0 +1,6 @@
+include: package:lints/recommended.yaml
+
+linter:
+  rules:
+    # Require braces for all control flow statements
+    curly_braces_in_flow_control_structures: true

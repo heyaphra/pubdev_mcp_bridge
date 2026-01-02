@@ -216,16 +216,17 @@ class DartdocParser {
   }
 
   EnumDoc _parseEnum(Map<String, dynamic> json) {
-    final values = (json['values'] as List<dynamic>? ?? []).map((v) {
-      if (v is String) {
-        return EnumValueDoc(name: v);
-      }
-      final vMap = v as Map<String, dynamic>;
-      return EnumValueDoc(
-        name: vMap['name'] as String? ?? '',
-        description: vMap['description'] as String?,
-      );
-    }).toList();
+    final values =
+        (json['values'] as List<dynamic>? ?? []).map((v) {
+          if (v is String) {
+            return EnumValueDoc(name: v);
+          }
+          final vMap = v as Map<String, dynamic>;
+          return EnumValueDoc(
+            name: vMap['name'] as String? ?? '',
+            description: vMap['description'] as String?,
+          );
+        }).toList();
 
     return EnumDoc(
       name: json['name'] as String? ?? '',

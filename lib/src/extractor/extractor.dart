@@ -65,11 +65,11 @@ class DocExtractor {
     ArchiveHandler? archive,
     DartMetadataExtractor? extractor,
     DartdocParser? parser,
-  })  : _client = client ?? PubdevClient(),
-        _cache = cache ?? CacheManager.defaultLocation(),
-        _archive = archive ?? ArchiveHandler(),
-        _extractor = extractor ?? DartMetadataExtractor(),
-        _parser = parser ?? DartdocParser();
+  }) : _client = client ?? PubdevClient(),
+       _cache = cache ?? CacheManager.defaultLocation(),
+       _archive = archive ?? ArchiveHandler(),
+       _extractor = extractor ?? DartMetadataExtractor(),
+       _parser = parser ?? DartdocParser();
 
   /// Retrieves package documentation, from cache if available.
   ///

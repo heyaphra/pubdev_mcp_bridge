@@ -54,9 +54,10 @@ class PubdevClientException implements Exception {
   PubdevClientException(this.message, [this.statusCode]);
 
   @override
-  String toString() => statusCode != null
-      ? 'PubdevClientException: $message ($statusCode)'
-      : message;
+  String toString() =>
+      statusCode != null
+          ? 'PubdevClientException: $message ($statusCode)'
+          : message;
 }
 
 /// HTTP client for interacting with pub.dev REST API.
@@ -166,12 +167,14 @@ class PubdevClient {
     }
     // Verify the version exists
     final metadata = await getPackageMetadata(packageName);
-    final versions = (metadata['versions'] as List<dynamic>)
-        .map((v) => v['version'] as String)
-        .toList();
+    final versions =
+        (metadata['versions'] as List<dynamic>)
+            .map((v) => v['version'] as String)
+            .toList();
     if (!versions.contains(version)) {
       throw PubdevClientException(
-          'Version $version not found for $packageName');
+        'Version $version not found for $packageName',
+      );
     }
     return version;
   }

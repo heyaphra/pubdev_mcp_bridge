@@ -36,11 +36,10 @@ analyzer:
 
   /// Runs `dart pub get` in the package directory.
   Future<void> pubGet(String packageDir) async {
-    final result = await Process.run(
-      'dart',
-      ['pub', 'get'],
-      workingDirectory: packageDir,
-    );
+    final result = await Process.run('dart', [
+      'pub',
+      'get',
+    ], workingDirectory: packageDir);
 
     if (result.exitCode != 0) {
       throw StateError('dart pub get failed: ${result.stderr}');
@@ -96,14 +95,7 @@ analyzer:
     // respect analysis_options.yaml
     final result = await Process.run(
       'dartdoc_json',
-      [
-        '--root',
-        packageDir,
-        '--output',
-        outputPath,
-        '--pretty',
-        ...libFiles,
-      ],
+      ['--root', packageDir, '--output', outputPath, '--pretty', ...libFiles],
       environment: {
         ...Platform.environment,
         'DART_VM_OPTIONS': '--enable-experiment=dot-shorthands,macros',

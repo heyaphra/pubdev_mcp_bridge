@@ -11,15 +11,11 @@ import 'commands/serve_command.dart';
 /// CLI runner for pubdev_mcp_bridge commands.
 class PubdevMcpBridgeRunner extends CommandRunner<int> {
   PubdevMcpBridgeRunner()
-      : super(
-          'pubdev_mcp_bridge',
-          'Generate MCP servers from pub.dev package documentation.',
-        ) {
-    argParser.addFlag(
-      'version',
-      negatable: false,
-      help: 'Print the version.',
-    );
+    : super(
+        'pubdev_mcp_bridge',
+        'Generate MCP servers from pub.dev package documentation.',
+      ) {
+    argParser.addFlag('version', negatable: false, help: 'Print the version.');
 
     addCommand(ServeCommand());
     addCommand(ExtractCommand());

@@ -17,11 +17,7 @@ class CleanCommand extends Command<int> {
 
   CleanCommand() {
     argParser
-      ..addOption(
-        'version',
-        abbr: 'v',
-        help: 'Specific version to remove',
-      )
+      ..addOption('version', abbr: 'v', help: 'Specific version to remove')
       ..addFlag(
         'all',
         abbr: 'a',

@@ -22,16 +22,16 @@ final class PubdevMcpServer extends MCPServer with ToolsSupport {
     required StreamChannel<String> channel,
     required this.package,
   }) : super.fromStreamChannel(
-          channel,
-          implementation: Implementation(
-            name: package.name,
-            version: package.version,
-          ),
-          instructions:
-              'MCP server providing API documentation for the ${package.name} '
-              'Dart package. Use the tools to search and retrieve documentation '
-              'for classes, functions, enums, and more.',
-        );
+         channel,
+         implementation: Implementation(
+           name: package.name,
+           version: package.version,
+         ),
+         instructions:
+             'MCP server providing API documentation for the ${package.name} '
+             'Dart package. Use the tools to search and retrieve documentation '
+             'for classes, functions, enums, and more.',
+       );
 
   @override
   FutureOr<InitializeResult> initialize(InitializeRequest request) async {
@@ -45,7 +45,8 @@ final class PubdevMcpServer extends MCPServer with ToolsSupport {
     registerTool(
       Tool(
         name: 'search',
-        description: 'Search the ${package.name} API documentation for '
+        description:
+            'Search the ${package.name} API documentation for '
             'classes, functions, enums, and more.',
         inputSchema: ObjectSchema(
           properties: {
@@ -208,8 +209,9 @@ final class PubdevMcpServer extends MCPServer with ToolsSupport {
     for (final func in package.allFunctions) {
       final score = _matchScore(func.name, func.description, query);
       if (score > 0) {
-        results
-            .add(_SearchResult('function', func.name, func.description, score));
+        results.add(
+          _SearchResult('function', func.name, func.description, score),
+        );
       }
     }
 
@@ -225,12 +227,15 @@ final class PubdevMcpServer extends MCPServer with ToolsSupport {
     results.sort((a, b) => b.score.compareTo(a.score));
     final topResults = results.take(limit);
 
-    final text = topResults.isEmpty
-        ? 'No results found for "$query"'
-        : topResults
-            .map((r) =>
-                '${r.type}: ${r.name}${r.description != null ? ' - ${r.description}' : ''}')
-            .join('\n');
+    final text =
+        topResults.isEmpty
+            ? 'No results found for "$query"'
+            : topResults
+                .map(
+                  (r) =>
+                      '${r.type}: ${r.name}${r.description != null ? ' - ${r.description}' : ''}',
+                )
+                .join('\n');
 
     return CallToolResult(content: [TextContent(text: text)]);
   }
@@ -321,28 +326,31 @@ final class PubdevMcpServer extends MCPServer with ToolsSupport {
       );
     }
 
-    final text = cls.methods.isEmpty
-        ? '$className has no methods'
-        : cls.methods
-            .map((m) => '${m.signature}\n  ${m.description ?? ''}')
-            .join('\n\n');
+    final text =
+        cls.methods.isEmpty
+            ? '$className has no methods'
+            : cls.methods
+                .map((m) => '${m.signature}\n  ${m.description ?? ''}')
+                .join('\n\n');
 
     return CallToolResult(content: [TextContent(text: text)]);
   }
 
   Future<CallToolResult> _handleListClasses(CallToolRequest request) async {
     final classes = package.allClasses;
-    final text = classes.isEmpty
-        ? 'No classes found'
-        : classes.map((c) => c.name).join('\n');
+    final text =
+        classes.isEmpty
+            ? 'No classes found'
+            : classes.map((c) => c.name).join('\n');
     return CallToolResult(content: [TextContent(text: text)]);
   }
 
   Future<CallToolResult> _handleListFunctions(CallToolRequest request) async {
     final functions = package.allFunctions;
-    final text = functions.isEmpty
-        ? 'No top-level functions found'
-        : functions.map((f) => f.name).join('\n');
+    final text =
+        functions.isEmpty
+            ? 'No top-level functions found'
+            : functions.map((f) => f.name).join('\n');
     return CallToolResult(content: [TextContent(text: text)]);
   }
 
@@ -355,9 +363,10 @@ final class PubdevMcpServer extends MCPServer with ToolsSupport {
 
   Future<CallToolResult> _handleListLibraries(CallToolRequest request) async {
     final libs = package.libraries;
-    final text = libs.isEmpty
-        ? 'No libraries found'
-        : libs.map((l) => l.name).join('\n');
+    final text =
+        libs.isEmpty
+            ? 'No libraries found'
+            : libs.map((l) => l.name).join('\n');
     return CallToolResult(content: [TextContent(text: text)]);
   }
 
@@ -479,8 +488,9 @@ final class PubdevMcpServer extends MCPServer with ToolsSupport {
       buffer.writeln('Classes: ${lib.classes.map((c) => c.name).join(', ')}');
     }
     if (lib.functions.isNotEmpty) {
-      buffer
-          .writeln('Functions: ${lib.functions.map((f) => f.name).join(', ')}');
+      buffer.writeln(
+        'Functions: ${lib.functions.map((f) => f.name).join(', ')}',
+      );
     }
     if (lib.enums.isNotEmpty) {
       buffer.writeln('Enums: ${lib.enums.map((e) => e.name).join(', ')}');

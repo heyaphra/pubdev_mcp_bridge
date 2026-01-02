@@ -21,11 +21,10 @@ class DartMetadataExtractor {
 
   /// Runs `dart pub get` in the package directory.
   Future<void> pubGet(String packageDir) async {
-    final result = await Process.run(
-      'dart',
-      ['pub', 'get'],
-      workingDirectory: packageDir,
-    );
+    final result = await Process.run('dart', [
+      'pub',
+      'get',
+    ], workingDirectory: packageDir);
     if (result.exitCode != 0) {
       throw StateError('dart pub get failed: ${result.stderr}');
     }
@@ -95,8 +94,9 @@ analyzer:
 
       try {
         final context = collection.contextFor(filePath);
-        final result =
-            await context.currentSession.getResolvedLibrary(filePath);
+        final result = await context.currentSession.getResolvedLibrary(
+          filePath,
+        );
 
         if (result is ResolvedLibraryResult) {
           final libraryJson = _extractLibrary(
@@ -139,8 +139,9 @@ analyzer:
     // Extract classes from library
     for (final cls in library.classes) {
       final name = cls.name;
-      if (name == null || name.isEmpty || processedNames.contains(name))
+      if (name == null || name.isEmpty || processedNames.contains(name)) {
         continue;
+      }
       if (_isPrivate(name)) continue;
       final decl = _extractClass(cls);
       if (decl != null) {
@@ -152,8 +153,9 @@ analyzer:
     // Extract enums
     for (final e in library.enums) {
       final name = e.name;
-      if (name == null || name.isEmpty || processedNames.contains(name))
+      if (name == null || name.isEmpty || processedNames.contains(name)) {
         continue;
+      }
       if (_isPrivate(name)) continue;
       final decl = _extractEnum(e);
       if (decl != null) {
@@ -177,8 +179,9 @@ analyzer:
     // Extract top-level functions
     for (final func in library.topLevelFunctions) {
       final name = func.name;
-      if (name == null || name.isEmpty || processedNames.contains(name))
+      if (name == null || name.isEmpty || processedNames.contains(name)) {
         continue;
+      }
       if (_isPrivate(name)) continue;
       final decl = _extractFunction(func);
       if (decl != null) {
@@ -190,8 +193,9 @@ analyzer:
     // Extract mixins
     for (final mixin in library.mixins) {
       final name = mixin.name;
-      if (name == null || name.isEmpty || processedNames.contains(name))
+      if (name == null || name.isEmpty || processedNames.contains(name)) {
         continue;
+      }
       if (_isPrivate(name)) continue;
       final decl = _extractMixin(mixin);
       if (decl != null) {
@@ -203,8 +207,9 @@ analyzer:
     // Extract top-level variables
     for (final v in library.topLevelVariables) {
       final name = v.name;
-      if (name == null || name.isEmpty || processedNames.contains(name))
+      if (name == null || name.isEmpty || processedNames.contains(name)) {
         continue;
+      }
       if (_isPrivate(name)) continue;
       final decl = _extractVariable(v);
       if (decl != null) {
@@ -216,8 +221,9 @@ analyzer:
     // Extract typedefs
     for (final td in library.typeAliases) {
       final name = td.name;
-      if (name == null || name.isEmpty || processedNames.contains(name))
+      if (name == null || name.isEmpty || processedNames.contains(name)) {
         continue;
+      }
       if (_isPrivate(name)) continue;
       final decl = _extractTypedef(td);
       if (decl != null) {
@@ -244,10 +250,7 @@ analyzer:
     final name = element.name;
     if (name == null || name.isEmpty) return null;
 
-    final json = <String, dynamic>{
-      'kind': 'class',
-      'name': name,
-    };
+    final json = <String, dynamic>{'kind': 'class', 'name': name};
 
     final desc = _getDescription(element);
     if (desc != null) json['description'] = desc;
@@ -272,10 +275,11 @@ analyzer:
           element.typeParameters.map((t) => t.name ?? '').toList();
     }
 
-    json['constructors'] = element.constructors
-        .where((c) => !_isPrivate(c.name ?? ''))
-        .map((c) => _extractConstructor(c, name))
-        .toList();
+    json['constructors'] =
+        element.constructors
+            .where((c) => !_isPrivate(c.name ?? ''))
+            .map((c) => _extractConstructor(c, name))
+            .toList();
 
     json['methods'] = [
       ...element.methods
@@ -289,22 +293,23 @@ analyzer:
           .map(_extractSetter),
     ];
 
-    json['fields'] = element.fields
-        .where((f) => !_isPrivate(f.name ?? '') && !f.isSynthetic)
-        .map(_extractField)
-        .toList();
+    json['fields'] =
+        element.fields
+            .where((f) => !_isPrivate(f.name ?? '') && !f.isSynthetic)
+            .map(_extractField)
+            .toList();
 
     return json;
   }
 
   Map<String, dynamic> _extractConstructor(
-      ConstructorElement element, String className) {
+    ConstructorElement element,
+    String className,
+  ) {
     final ctorName = element.name ?? '';
     final name = ctorName.isEmpty ? className : '$className.$ctorName';
 
-    final json = <String, dynamic>{
-      'name': name,
-    };
+    final json = <String, dynamic>{'name': name};
 
     final desc = _getDescription(element);
     if (desc != null) json['description'] = desc;
@@ -317,9 +322,7 @@ analyzer:
   }
 
   Map<String, dynamic> _extractMethod(MethodElement element) {
-    final json = <String, dynamic>{
-      'name': element.name ?? '',
-    };
+    final json = <String, dynamic>{'name': element.name ?? ''};
 
     final desc = _getDescription(element);
     if (desc != null) json['description'] = desc;
@@ -399,10 +402,7 @@ analyzer:
     final name = element.name;
     if (name == null || name.isEmpty) return null;
 
-    final json = <String, dynamic>{
-      'kind': 'function',
-      'name': name,
-    };
+    final json = <String, dynamic>{'kind': 'function', 'name': name};
 
     final desc = _getDescription(element);
     if (desc != null) json['description'] = desc;
@@ -423,20 +423,18 @@ analyzer:
     final name = element.name;
     if (name == null || name.isEmpty) return null;
 
-    final json = <String, dynamic>{
-      'kind': 'enum',
-      'name': name,
-    };
+    final json = <String, dynamic>{'kind': 'enum', 'name': name};
 
     final desc = _getDescription(element);
     if (desc != null) json['description'] = desc;
 
-    json['values'] = element.fields.where((f) => f.isEnumConstant).map((c) {
-      final valueJson = <String, dynamic>{'name': c.name ?? ''};
-      final valueDesc = _getDescription(c);
-      if (valueDesc != null) valueJson['description'] = valueDesc;
-      return valueJson;
-    }).toList();
+    json['values'] =
+        element.fields.where((f) => f.isEnumConstant).map((c) {
+          final valueJson = <String, dynamic>{'name': c.name ?? ''};
+          final valueDesc = _getDescription(c);
+          if (valueDesc != null) valueJson['description'] = valueDesc;
+          return valueJson;
+        }).toList();
 
     json['methods'] = [
       ...element.methods
@@ -450,11 +448,16 @@ analyzer:
           .map(_extractSetter),
     ];
 
-    json['fields'] = element.fields
-        .where((f) =>
-            !_isPrivate(f.name ?? '') && !f.isSynthetic && !f.isEnumConstant)
-        .map(_extractField)
-        .toList();
+    json['fields'] =
+        element.fields
+            .where(
+              (f) =>
+                  !_isPrivate(f.name ?? '') &&
+                  !f.isSynthetic &&
+                  !f.isEnumConstant,
+            )
+            .map(_extractField)
+            .toList();
 
     return json;
   }
@@ -502,10 +505,7 @@ analyzer:
   Map<String, dynamic>? _extractExtension(ExtensionElement element) {
     final name = element.name;
 
-    final json = <String, dynamic>{
-      'kind': 'extension',
-      'name': name ?? '',
-    };
+    final json = <String, dynamic>{'kind': 'extension', 'name': name ?? ''};
 
     final desc = _getDescription(element);
     if (desc != null) json['description'] = desc;
@@ -524,10 +524,11 @@ analyzer:
           .map(_extractSetter),
     ];
 
-    json['fields'] = element.fields
-        .where((f) => !_isPrivate(f.name ?? '') && !f.isSynthetic)
-        .map(_extractField)
-        .toList();
+    json['fields'] =
+        element.fields
+            .where((f) => !_isPrivate(f.name ?? '') && !f.isSynthetic)
+            .map(_extractField)
+            .toList();
 
     return json;
   }
@@ -536,10 +537,7 @@ analyzer:
     final name = element.name;
     if (name == null || name.isEmpty) return null;
 
-    final json = <String, dynamic>{
-      'kind': 'mixin',
-      'name': name,
-    };
+    final json = <String, dynamic>{'kind': 'mixin', 'name': name};
 
     final desc = _getDescription(element);
     if (desc != null) json['description'] = desc;
@@ -564,16 +562,18 @@ analyzer:
           .map(_extractSetter),
     ];
 
-    json['fields'] = element.fields
-        .where((f) => !_isPrivate(f.name ?? '') && !f.isSynthetic)
-        .map(_extractField)
-        .toList();
+    json['fields'] =
+        element.fields
+            .where((f) => !_isPrivate(f.name ?? '') && !f.isSynthetic)
+            .map(_extractField)
+            .toList();
 
     return json;
   }
 
   Map<String, dynamic> _extractParameters(
-      List<FormalParameterElement> parameters) {
+    List<FormalParameterElement> parameters,
+  ) {
     final all = <Map<String, dynamic>>[];
     var positionalCount = 0;
 
