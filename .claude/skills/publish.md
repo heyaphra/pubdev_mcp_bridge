@@ -72,13 +72,21 @@ git push origin release/vX.Y.Z
 ```
 
 ### 4. Create Pull Request
-1. Go to GitHub repository
-2. Create PR from `release/vX.Y.Z` to `main`
-3. Title: "Release vX.Y.Z"
-4. Description: Include CHANGELOG content
-5. Request review if applicable
-6. Wait for CI/CD checks to pass
-7. Merge PR (use "Squash and merge" or "Create merge commit")
+Create the PR using the GitHub CLI:
+```bash
+gh pr create --base main --head release/vX.Y.Z \
+  --title "Release vX.Y.Z" \
+  --body "## Changes in vX.Y.Z
+
+$(cat CHANGELOG.md | sed -n '/## \[X.Y.Z\]/,/## \[/p' | head -n -1)"
+```
+
+If GitHub CLI is not available, guide the user to create the PR manually at the repository URL.
+
+After PR is created, wait for CI/CD checks to pass, then merge:
+```bash
+gh pr merge --squash
+```
 
 ### 5. Create Git Tag (After PR Merged)
 ```bash
