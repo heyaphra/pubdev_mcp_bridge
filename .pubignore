@@ -1,0 +1,4 @@
+# Files to exclude from pub.dev publication
+firebase-debug.log
+PUBLISHING.md
+.claude/
