@@ -14,10 +14,38 @@ import '../models/package_doc.dart';
 ///
 /// Exposes tools for searching and retrieving API documentation.
 final class PubdevMcpServer extends MCPServer with ToolsSupport {
+  // Search scoring constants
+  /// Score awarded for exact name match in search.
+  static const int _exactMatchScore = 100;
+
+  /// Score awarded when name starts with the query.
+  static const int _startsWithScore = 50;
+
+  /// Score awarded when name contains the query.
+  static const int _containsScore = 25;
+
+  /// Score awarded when description contains the query.
+  static const int _descriptionScore = 10;
+
   /// The package documentation being served.
   final PackageDoc package;
 
   /// Creates an MCP server for the given package.
+  ///
+  /// **Important**: You must call [initialize] before the server can handle
+  /// requests. Tool registration happens during initialization to ensure
+  /// all tools are available when the client connects, following the MCP
+  /// protocol lifecycle.
+  ///
+  /// Example:
+  /// ```dart
+  /// final server = PubdevMcpServer(
+  ///   channel: channel,
+  ///   package: packageDoc,
+  /// );
+  /// await server.initialize(request);
+  /// // Server is now ready to handle tool calls
+  /// ```
   PubdevMcpServer({
     required StreamChannel<String> channel,
     required this.package,
@@ -33,6 +61,14 @@ final class PubdevMcpServer extends MCPServer with ToolsSupport {
              'for classes, functions, enums, and more.',
        );
 
+  /// Initializes the server and registers all MCP tools.
+  ///
+  /// This method must be called before the server can handle requests.
+  /// It registers the 11 documentation tools (search, get_class, etc.)
+  /// after the parent server initialization completes.
+  ///
+  /// This follows the MCP protocol lifecycle where tools are registered
+  /// during the initialization phase.
   @override
   FutureOr<InitializeResult> initialize(InitializeRequest request) async {
     final result = await super.initialize(request);
@@ -192,14 +228,14 @@ final class PubdevMcpServer extends MCPServer with ToolsSupport {
 
   Future<CallToolResult> _handleSearch(CallToolRequest request) async {
     final args = request.arguments ?? {};
-    final query = (args['query'] as String).toLowerCase();
+    final queryLower = (args['query'] as String).toLowerCase();
     final limit = args['limit'] as int? ?? 10;
 
     final results = <_SearchResult>[];
 
     // Search classes
     for (final cls in package.allClasses) {
-      final score = _matchScore(cls.name, cls.description, query);
+      final score = _matchScore(cls.name, cls.description, queryLower);
       if (score > 0) {
         results.add(_SearchResult('class', cls.name, cls.description, score));
       }
@@ -207,7 +243,7 @@ final class PubdevMcpServer extends MCPServer with ToolsSupport {
 
     // Search functions
     for (final func in package.allFunctions) {
-      final score = _matchScore(func.name, func.description, query);
+      final score = _matchScore(func.name, func.description, queryLower);
       if (score > 0) {
         results.add(
           _SearchResult('function', func.name, func.description, score),
@@ -217,7 +253,7 @@ final class PubdevMcpServer extends MCPServer with ToolsSupport {
 
     // Search enums
     for (final e in package.allEnums) {
-      final score = _matchScore(e.name, e.description, query);
+      final score = _matchScore(e.name, e.description, queryLower);
       if (score > 0) {
         results.add(_SearchResult('enum', e.name, e.description, score));
       }
@@ -229,7 +265,7 @@ final class PubdevMcpServer extends MCPServer with ToolsSupport {
 
     final text =
         topResults.isEmpty
-            ? 'No results found for "$query"'
+            ? 'No results found for "${args['query']}"'
             : topResults
                 .map(
                   (r) =>
@@ -240,13 +276,40 @@ final class PubdevMcpServer extends MCPServer with ToolsSupport {
     return CallToolResult(content: [TextContent(text: text)]);
   }
 
-  int _matchScore(String name, String? description, String query) {
+  /// Calculates a relevance score for a search match.
+  ///
+  /// Scoring breakdown:
+  /// - Exact match: [_exactMatchScore] points
+  /// - Starts with query: [_startsWithScore] points
+  /// - Contains query: [_containsScore] points
+  /// - Description contains query: [_descriptionScore] points
+  ///
+  /// Higher scores indicate more relevant matches.
+  ///
+  /// **Performance**: The [queryLower] parameter should already be lowercased
+  /// to avoid redundant conversions when searching multiple items.
+  int _matchScore(String name, String? description, String queryLower) {
     var score = 0;
     final nameLower = name.toLowerCase();
-    if (nameLower == query) score += 100;
-    if (nameLower.startsWith(query)) score += 50;
-    if (nameLower.contains(query)) score += 25;
-    if (description?.toLowerCase().contains(query) ?? false) score += 10;
+
+    if (nameLower == queryLower) {
+      score += _exactMatchScore;
+    }
+    if (nameLower.startsWith(queryLower)) {
+      score += _startsWithScore;
+    }
+    if (nameLower.contains(queryLower)) {
+      score += _containsScore;
+    }
+
+    // Cache description lowercase conversion
+    if (description != null) {
+      final descLower = description.toLowerCase();
+      if (descLower.contains(queryLower)) {
+        score += _descriptionScore;
+      }
+    }
+
     return score;
   }
 
@@ -500,11 +563,23 @@ final class PubdevMcpServer extends MCPServer with ToolsSupport {
   }
 }
 
-class _SearchResult {
+/// Internal search result for ranking documentation matches.
+///
+/// This class is private because it's an implementation detail of the
+/// search algorithm and not part of the public API.
+final class _SearchResult {
+  /// The type of element (e.g., 'class', 'function', 'enum').
   final String type;
+
+  /// The name of the element.
   final String name;
+
+  /// Optional description of the element.
   final String? description;
+
+  /// The search relevance score (higher is better).
   final int score;
 
-  _SearchResult(this.type, this.name, this.description, this.score);
+  /// Creates a search result with the given properties.
+  const _SearchResult(this.type, this.name, this.description, this.score);
 }

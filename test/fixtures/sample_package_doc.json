@@ -1,0 +1,113 @@
+{
+  "name": "test_package",
+  "version": "1.0.0",
+  "description": "A test package for unit tests",
+  "repository": "https://github.com/test/test_package",
+  "homepage": "https://test.dev",
+  "libraries": [
+    {
+      "name": "test_package",
+      "description": "Main library for test_package",
+      "classes": [
+        {
+          "name": "Calculator",
+          "description": "A simple calculator class",
+          "isAbstract": false,
+          "superclass": "Object",
+          "interfaces": [],
+          "mixins": [],
+          "typeParameters": [],
+          "annotations": [],
+          "constructors": [
+            {
+              "name": "",
+              "description": "Creates a new Calculator",
+              "parameters": [],
+              "isConst": false,
+              "isFactory": false
+            }
+          ],
+          "methods": [
+            {
+              "name": "add",
+              "description": "Adds two numbers",
+              "returnType": "int",
+              "parameters": [
+                {
+                  "name": "a",
+                  "type": "int",
+                  "isRequired": true,
+                  "isNamed": false,
+                  "isPositional": false
+                },
+                {
+                  "name": "b",
+                  "type": "int",
+                  "isRequired": true,
+                  "isNamed": false,
+                  "isPositional": false
+                }
+              ],
+              "typeParameters": [],
+              "isStatic": false,
+              "isAbstract": false,
+              "isOperator": false,
+              "isGetter": false,
+              "isSetter": false
+            }
+          ],
+          "fields": [
+            {
+              "name": "version",
+              "description": "Calculator version",
+              "type": "String",
+              "isStatic": true,
+              "isFinal": true,
+              "isConst": false,
+              "isLate": false
+            }
+          ]
+        }
+      ],
+      "functions": [
+        {
+          "name": "greet",
+          "description": "Greets the user",
+          "returnType": "String",
+          "parameters": [
+            {
+              "name": "name",
+              "type": "String",
+              "isRequired": true,
+              "isNamed": false,
+              "isPositional": false
+            }
+          ],
+          "typeParameters": []
+        }
+      ],
+      "enums": [
+        {
+          "name": "Status",
+          "description": "Status enum",
+          "values": [
+            {
+              "name": "pending",
+              "description": "Pending status"
+            },
+            {
+              "name": "completed",
+              "description": "Completed status"
+            }
+          ],
+          "methods": [],
+          "fields": []
+        }
+      ],
+      "typedefs": [],
+      "extensions": [],
+      "mixins": [],
+      "variables": []
+    }
+  ]
+}

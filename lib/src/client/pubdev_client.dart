@@ -50,14 +50,28 @@ class PubdevClientException implements Exception {
   /// The HTTP status code if available.
   final int? statusCode;
 
-  /// Creates a pub.dev client exception with [message] and optional [statusCode].
-  PubdevClientException(this.message, [this.statusCode]);
+  /// The stack trace where the exception occurred, if available.
+  final StackTrace? stackTrace;
+
+  /// Creates a pub.dev client exception with [message] and optional [statusCode]
+  /// and [stackTrace].
+  PubdevClientException(this.message, [this.statusCode, this.stackTrace]);
 
   @override
-  String toString() =>
-      statusCode != null
-          ? 'PubdevClientException: $message ($statusCode)'
-          : message;
+  String toString() {
+    final buffer = StringBuffer();
+    if (statusCode != null) {
+      buffer.write('PubdevClientException: $message ($statusCode)');
+    } else {
+      buffer.write('PubdevClientException: $message');
+    }
+
+    if (stackTrace != null) {
+      buffer.write('\n$stackTrace');
+    }
+
+    return buffer.toString();
+  }
 }
 
 /// HTTP client for interacting with pub.dev REST API.

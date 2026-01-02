@@ -14,6 +14,8 @@ import 'package:analyzer/dart/element/type.dart';
 import 'package:analyzer/file_system/physical_file_system.dart';
 import 'package:path/path.dart' as p;
 
+import 'extraction_exception.dart';
+
 /// Extracts API documentation from Dart packages using package:analyzer.
 class DartMetadataExtractor {
   /// Checks if analyzer is available (always true, it's a dependency).
@@ -56,7 +58,7 @@ class DartMetadataExtractor {
       'get',
     ], workingDirectory: packageDir);
     if (result.exitCode != 0) {
-      throw StateError('dart pub get failed: ${result.stderr}');
+      throw ExtractionException('dart pub get failed', result.stderr as String);
     }
   }
 
@@ -103,7 +105,10 @@ analyzer:
     // Find library files
     final libFiles = findLibraryFiles(packageDir);
     if (libFiles.isEmpty) {
-      throw StateError('No library files found in package');
+      throw ExtractionException(
+        'No library files found in package',
+        'Searched in: ${p.join(packageDir, 'lib')}',
+      );
     }
 
     // Normalize the package directory path

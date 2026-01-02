@@ -11,6 +11,7 @@ import 'dart:io';
 import 'package:path/path.dart' as p;
 
 import '../models/package_doc.dart';
+import 'extraction_exception.dart';
 
 /// Parses analyzer JSON output into [PackageDoc] model.
 ///
@@ -29,7 +30,10 @@ class DartdocParser {
   ) async {
     final file = File(jsonPath);
     if (!file.existsSync()) {
-      throw StateError('JSON file not found: $jsonPath');
+      throw ExtractionException(
+        'JSON file not found',
+        'Expected file at: $jsonPath',
+      );
     }
 
     final content = await file.readAsString();

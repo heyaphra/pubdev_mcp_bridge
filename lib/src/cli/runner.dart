@@ -3,6 +3,7 @@ library;
 
 import 'package:args/command_runner.dart';
 
+import '../version.dart';
 import 'commands/clean_command.dart';
 import 'commands/extract_command.dart';
 import 'commands/list_command.dart';
@@ -29,7 +30,7 @@ class PubdevMcpBridgeRunner extends CommandRunner<int> {
       final results = parse(args);
 
       if (results['version'] as bool) {
-        print('pubdev_mcp_bridge version 2.0.0');
+        print('pubdev_mcp_bridge version $packageVersion');
         return 0;
       }
 
