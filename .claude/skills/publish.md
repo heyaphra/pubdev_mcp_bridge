@@ -93,12 +93,16 @@ The user must:
 3. Wait for CI/CD checks to pass
 4. **Merge the PR manually on GitHub** (not via CLI)
 
-Ask the user: "Please review and merge the PR on GitHub when ready, then confirm here so I can continue with tagging and publishing."
+Ask the user: "Have you reviewed and merged the PR on GitHub? Once merged, type 'yes' or 'merged' to continue with tagging and publishing."
 
 ### 5. Create Git Tag (After User Confirms PR Merged on GitHub)
 ```bash
 git checkout main
 git pull origin main
+
+# Verify the merge actually happened
+git log --oneline -1 | grep -q "X.Y.Z" || echo "Warning: Version X.Y.Z not found in latest commit"
+
 git tag -a vX.Y.Z -m "Release version X.Y.Z"
 git push origin vX.Y.Z
 ```
