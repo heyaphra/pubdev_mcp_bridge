@@ -148,6 +148,135 @@ dependencies:
       });
     });
 
+    group('dev_dependencies stripping', () {
+      test('removes dev_dependencies section at end of file', () async {
+        final packageDir = await _createTestPackage(
+          tempDir,
+          name: 'test_pkg',
+          pubspecContent: '''
+name: test_pkg
+version: 1.0.0
+environment:
+  sdk: ^3.0.0
+
+dependencies:
+  path: ^1.9.0
+
+dev_dependencies:
+  test: ^1.0.0
+  lints: ^2.0.0
+  some_path_dep:
+    path: ../nonexistent
+''',
+        );
+
+        await extractor.pubGet(packageDir);
+
+        final content =
+            await File(p.join(packageDir, 'pubspec.yaml')).readAsString();
+        expect(content, isNot(contains('dev_dependencies')));
+        expect(content, isNot(contains('test: ^1.0.0')));
+        expect(content, isNot(contains('some_path_dep')));
+        expect(content, contains('name: test_pkg'));
+        expect(content, contains('path: ^1.9.0'));
+      });
+
+      test('removes dev_dependencies section in middle of file', () async {
+        final packageDir = await _createTestPackage(
+          tempDir,
+          name: 'test_pkg',
+          pubspecContent: '''
+name: test_pkg
+version: 1.0.0
+environment:
+  sdk: ^3.0.0
+
+dependencies:
+  path: ^1.9.0
+
+dev_dependencies:
+  test: ^1.0.0
+  nested_dep:
+    git:
+      url: https://example.com/repo.git
+      ref: main
+
+flutter:
+  uses-material-design: true
+''',
+        );
+
+        await extractor.pubGet(packageDir);
+
+        final content =
+            await File(p.join(packageDir, 'pubspec.yaml')).readAsString();
+        expect(content, isNot(contains('dev_dependencies')));
+        expect(content, isNot(contains('test: ^1.0.0')));
+        expect(content, isNot(contains('nested_dep')));
+        expect(content, contains('name: test_pkg'));
+        expect(content, contains('path: ^1.9.0'));
+        expect(content, contains('flutter:'));
+        expect(content, contains('uses-material-design: true'));
+      });
+
+      test('preserves pubspec.yaml without dev_dependencies', () async {
+        final originalContent = '''
+name: test_pkg
+version: 1.0.0
+environment:
+  sdk: ^3.0.0
+
+dependencies:
+  path: ^1.9.0
+''';
+
+        final packageDir = await _createTestPackage(
+          tempDir,
+          name: 'test_pkg',
+          pubspecContent: originalContent,
+        );
+
+        await extractor.pubGet(packageDir);
+
+        final content =
+            await File(p.join(packageDir, 'pubspec.yaml')).readAsString();
+        expect(content, equals(originalContent));
+      });
+
+      test('handles both workspace resolution and dev_dependencies', () async {
+        final packageDir = await _createTestPackage(
+          tempDir,
+          name: 'test_pkg',
+          pubspecContent: '''
+name: test_pkg
+version: 1.0.0
+environment:
+  sdk: ^3.0.0
+
+resolution: workspace
+
+dependencies:
+  path: ^1.9.0
+
+dev_dependencies:
+  test: ^1.0.0
+  monorepo_pkg:
+    path: ../monorepo_pkg
+''',
+        );
+
+        await extractor.pubGet(packageDir);
+
+        final content =
+            await File(p.join(packageDir, 'pubspec.yaml')).readAsString();
+        expect(content, isNot(contains('resolution: workspace')));
+        expect(content, isNot(contains('dev_dependencies')));
+        expect(content, isNot(contains('monorepo_pkg')));
+        expect(content, contains('name: test_pkg'));
+        expect(content, contains('path: ^1.9.0'));
+      });
+    });
+
     group('pubGet', () {
       test('runs dart pub get successfully', () async {
         final packageDir = await _createTestPackage(
