@@ -21,13 +21,15 @@ class DartMetadataExtractor {
   /// Checks if analyzer is available (always true, it's a dependency).
   Future<bool> isAvailable() async => true;
 
-  /// Prepares package for analysis by removing workspace resolution.
+  /// Prepares package for analysis by removing workspace resolution and dev dependencies.
   ///
-  /// Packages developed in Dart workspaces (monorepos) may have
-  /// `resolution: workspace` in their pubspec.yaml. This is a development-time
-  /// artifact - published packages on pub.dev have normal dependencies that
-  /// work standalone. We strip this line from all pubspec.yaml files in the
-  /// package directory to allow `dart pub get` to succeed.
+  /// Packages developed in Dart workspaces (monorepos) may have:
+  /// 1. `resolution: workspace` in their pubspec.yaml
+  /// 2. Dev dependencies with path references to monorepo packages
+  ///
+  /// These are development-time artifacts - published packages on pub.dev have
+  /// normal dependencies that work standalone. We strip these to allow
+  /// `dart pub get` to succeed.
   Future<void> _prepareForAnalysis(String packageDir) async {
     // Find all pubspec.yaml files recursively
     final packageDirEntity = Directory(packageDir);
@@ -36,12 +38,34 @@ class DartMetadataExtractor {
     await for (final entity in packageDirEntity.list(recursive: true)) {
       if (entity is File && entity.path.endsWith('pubspec.yaml')) {
         var content = await entity.readAsString();
+        var modified = false;
 
+        // Remove workspace resolution
         if (content.contains('resolution: workspace')) {
           content = content.replaceAll(
             RegExp(r'resolution:\s*workspace\s*\n?'),
             '',
           );
+          modified = true;
+        }
+
+        // Remove dev_dependencies section entirely
+        // Dev dependencies often include:
+        // - Path dependencies to monorepo packages
+        // - Test utilities and build tools
+        // We don't need these for extracting public API documentation
+        if (content.contains('dev_dependencies:')) {
+          // Match newline + dev_dependencies: + everything until next top-level
+          // key or end of string. Using [\s\S]* to match across newlines,
+          // and $ for end-of-string (works without multiLine flag)
+          content = content.replaceAll(
+            RegExp(r'\ndev_dependencies:[\s\S]*?(?=\n[a-z]|\s*$)'),
+            '',
+          );
+          modified = true;
+        }
+
+        if (modified) {
           await entity.writeAsString(content);
         }
       }
