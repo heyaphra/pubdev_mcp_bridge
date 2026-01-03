@@ -57,6 +57,10 @@ class PackageDoc {
   /// Get all enums across all libraries.
   List<EnumDoc> get allEnums => libraries.expand((lib) => lib.enums).toList();
 
+  /// Get all extensions across all libraries.
+  List<ExtensionDoc> get allExtensions =>
+      libraries.expand((lib) => lib.extensions).toList();
+
   @override
   String toString() => 'PackageDoc($name@$version)';
 }
