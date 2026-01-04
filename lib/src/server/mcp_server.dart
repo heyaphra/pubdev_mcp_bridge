@@ -222,6 +222,45 @@ final class PubdevMcpServer extends MCPServer with ToolsSupport {
       ),
       _handleGetPackageInfo,
     );
+
+    // List extensions tool
+    registerTool(
+      Tool(
+        name: 'list_extensions',
+        description:
+            'List all extensions in the ${package.name} package. '
+            'Optionally filter by the type they extend using substring '
+            'matching (e.g., "List" finds List<int>, List<String>, etc.).',
+        inputSchema: ObjectSchema(
+          properties: {
+            'on_type': StringSchema(
+              description:
+                  'Filter by the type the extension extends. Uses '
+                  'case-insensitive substring matching to find all related '
+                  'extensions (e.g., "Map" finds Map<K,V>, Map<String,int>).',
+            ),
+          },
+        ),
+      ),
+      _handleListExtensions,
+    );
+
+    // Get extension tool
+    registerTool(
+      Tool(
+        name: 'get_extension',
+        description: 'Get detailed documentation for a specific extension.',
+        inputSchema: ObjectSchema(
+          properties: {
+            'extension_name': StringSchema(
+              description: 'Name of the extension',
+            ),
+          },
+          required: ['extension_name'],
+        ),
+      ),
+      _handleGetExtension,
+    );
   }
 
   // === Tool Handlers ===
@@ -452,8 +491,57 @@ final class PubdevMcpServer extends MCPServer with ToolsSupport {
     buffer.writeln('  Classes: ${package.allClasses.length}');
     buffer.writeln('  Functions: ${package.allFunctions.length}');
     buffer.writeln('  Enums: ${package.allEnums.length}');
+    buffer.writeln('  Extensions: ${package.allExtensions.length}');
 
     return CallToolResult(content: [TextContent(text: buffer.toString())]);
+  }
+
+  Future<CallToolResult> _handleListExtensions(CallToolRequest request) async {
+    final args = request.arguments ?? {};
+    final onType = args['on_type'] as String?;
+
+    final extensions =
+        (onType != null && onType.isNotEmpty)
+            ? package.allExtensions
+                .where(
+                  (e) => e.onType.toLowerCase().contains(onType.toLowerCase()),
+                )
+                .toList()
+            : package.allExtensions;
+
+    if (extensions.isEmpty) {
+      final msg =
+          onType != null
+              ? 'No extensions found for type "$onType"'
+              : 'No extensions found';
+      return CallToolResult(content: [TextContent(text: msg)]);
+    }
+
+    final text = extensions
+        .map(
+          (e) =>
+              '${e.name} on ${e.onType}'
+              '${e.description != null ? ' - ${e.description}' : ''}',
+        )
+        .join('\n');
+
+    return CallToolResult(content: [TextContent(text: text)]);
+  }
+
+  Future<CallToolResult> _handleGetExtension(CallToolRequest request) async {
+    final args = request.arguments ?? {};
+    final extName = args['extension_name'] as String;
+
+    final ext =
+        package.allExtensions.where((e) => e.name == extName).firstOrNull;
+    if (ext == null) {
+      return CallToolResult(
+        content: [TextContent(text: 'Extension not found: $extName')],
+        isError: true,
+      );
+    }
+
+    return CallToolResult(content: [TextContent(text: _formatExtension(ext))]);
   }
 
   // === Formatters ===
@@ -557,6 +645,34 @@ final class PubdevMcpServer extends MCPServer with ToolsSupport {
     }
     if (lib.enums.isNotEmpty) {
       buffer.writeln('Enums: ${lib.enums.map((e) => e.name).join(', ')}');
+    }
+
+    return buffer.toString();
+  }
+
+  String _formatExtension(ExtensionDoc ext) {
+    final buffer = StringBuffer();
+    buffer.writeln('extension ${ext.name} on ${ext.onType}');
+    buffer.writeln();
+
+    if (ext.description != null) {
+      buffer.writeln(ext.description);
+      buffer.writeln();
+    }
+
+    if (ext.fields.isNotEmpty) {
+      buffer.writeln('Getters/Fields:');
+      for (final f in ext.fields) {
+        buffer.writeln('  ${f.type} ${f.name}');
+      }
+      buffer.writeln();
+    }
+
+    if (ext.methods.isNotEmpty) {
+      buffer.writeln('Methods:');
+      for (final m in ext.methods) {
+        buffer.writeln('  ${m.signature}');
+      }
     }
 
     return buffer.toString();
