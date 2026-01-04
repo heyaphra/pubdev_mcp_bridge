@@ -78,6 +78,15 @@ void main() {
         expect(server.package.allEnums.first.name, equals('Color'));
       });
 
+      test('accesses all extensions from package', () {
+        final channel = _createMockChannel();
+        final server = PubdevMcpServer(channel: channel, package: testPackage);
+
+        expect(server.package.allExtensions, hasLength(1));
+        expect(server.package.allExtensions.first.name, equals('StringUtils'));
+        expect(server.package.allExtensions.first.onType, equals('String'));
+      });
+
       test('accesses libraries from package', () {
         final channel = _createMockChannel();
         final server = PubdevMcpServer(channel: channel, package: testPackage);
@@ -122,6 +131,7 @@ void main() {
         expect(library.classes, hasLength(1));
         expect(library.functions, hasLength(1));
         expect(library.enums, hasLength(1));
+        expect(library.extensions, hasLength(1));
       });
 
       test('test class has expected structure', () {
@@ -146,6 +156,15 @@ void main() {
           color.values.map((v) => v.name),
           containsAll(['red', 'green', 'blue']),
         );
+      });
+
+      test('test extension has expected structure', () {
+        final stringUtils = testPackage.allExtensions.first;
+        expect(stringUtils.name, equals('StringUtils'));
+        expect(stringUtils.description, contains('string utilities'));
+        expect(stringUtils.onType, equals('String'));
+        expect(stringUtils.methods, hasLength(1));
+        expect(stringUtils.methods.first.name, equals('capitalize'));
       });
     });
   });
@@ -206,6 +225,25 @@ PackageDoc _createTestPackage() {
               EnumValueDoc(name: 'green'),
               EnumValueDoc(name: 'blue'),
             ],
+          ),
+        ],
+        extensions: [
+          ExtensionDoc(
+            name: 'StringUtils',
+            description: 'Useful string utilities',
+            onType: 'String',
+            methods: [
+              MethodDoc(
+                name: 'capitalize',
+                description: 'Capitalizes the first letter',
+                returnType: 'String',
+                isStatic: false,
+                isAbstract: false,
+                isOperator: false,
+                parameters: [],
+              ),
+            ],
+            fields: [],
           ),
         ],
       ),
