@@ -1,6 +1,6 @@
 name: pubdev_mcp_bridge
 description: Extract and serve Dart package documentation via MCP, enabling AI assistants to understand pub.dev APIs.
-version: 2.0.4
+version: 2.0.5
 repository: https://github.com/heyaphra/pubdev_mcp_bridge
 homepage: https://github.com/heyaphra/pubdev_mcp_bridge
 issue_tracker: https://github.com/heyaphra/pubdev_mcp_bridge/issues
